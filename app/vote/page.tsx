@@ -13,6 +13,17 @@ const mclaren = McLaren({
   weight: '400',
 });
 
+// 🔧 Define types for the vote results
+interface NomineeResult {
+  nominee: string;
+  votes: number;
+}
+
+interface CategoryResult {
+  _id: string;
+  nominees: NomineeResult[];
+}
+
 function ThemeToggle() {
   const [theme, setTheme] = useState('elgVotes');
 
@@ -34,7 +45,7 @@ export default function VotePage() {
   const [currentCategory, setCurrentCategory] = useState(Object.keys(categoriesData)[0]);
   const [selectedNominee, setSelectedNominee] = useState('');
   const [votedCategories, setVotedCategories] = useState<string[]>([]);
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<CategoryResult[]>([]);
   const [loading, setLoading] = useState(false);
 
   const categoryKeys = Object.keys(categoriesData);
@@ -65,8 +76,8 @@ export default function VotePage() {
       setVotedCategories([...votedCategories, currentCategory]);
       setSelectedNominee('');
       toast.success('✅ Vote submitted!');
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       toast.error('Something went wrong.');
     } finally {
       setLoading(false);
@@ -75,7 +86,7 @@ export default function VotePage() {
 
   const fetchResults = async () => {
     const res = await fetch('/api/vote');
-    const data = await res.json();
+    const data: CategoryResult[] = await res.json();
     setResults(data);
   };
 
@@ -116,11 +127,11 @@ export default function VotePage() {
                 <h3 className="text-lg font-bold text-center">🎉 Voting Complete!</h3>
                 <p className="text-center mb-2">Here are the live results:</p>
 
-                {results.map((cat: any) => (
+                {results.map((cat) => (
                   <div key={cat._id} className="mb-4">
                     <h4 className="font-semibold">{cat._id}</h4>
                     <ul className="pl-4 list-disc">
-                      {cat.nominees.map((n: any) => (
+                      {cat.nominees.map((n) => (
                         <li key={n.nominee}>
                           {n.nominee} - {n.votes} vote(s)
                         </li>
@@ -143,7 +154,7 @@ export default function VotePage() {
                 </h3>
 
                 <div className="form-control mb-4 space-y-2">
-                  {categoriesData[currentCategory].map((nominee) => (
+                  {categoriesData[currentCategory].map((nominee: string) => (
                     <label
                       key={nominee}
                       className={`flex justify-between items-center p-3 rounded-lg cursor-pointer transition-all ${

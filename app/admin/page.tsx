@@ -5,19 +5,30 @@ import { useRouter } from 'next/navigation';
 import { Toaster, toast } from 'react-hot-toast';
 import VoteBarChart from '@/component/Charts/VoteBarChart';
 
+// ✅ Define types
+interface NomineeResult {
+  nominee: string;
+  votes: number;
+}
+
+interface CategoryResult {
+  _id: string;
+  nominees: NomineeResult[];
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
-  const [results, setResults] = useState<any[]>([]);
-  const [checkedAuth, setCheckedAuth] = useState(false); // Prevent duplicate toasts
+  const [results, setResults] = useState<CategoryResult[]>([]);
+  const [checkedAuth, setCheckedAuth] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
       try {
         const res = await fetch('/api/vote', {
-          credentials: 'include', // ✅ include cookies
+          credentials: 'include',
         });
         if (!res.ok) throw new Error('Unauthorized');
-        const data = await res.json();
+        const data: CategoryResult[] = await res.json();
         setResults(data);
         setCheckedAuth(true);
       } catch (err) {
@@ -33,7 +44,7 @@ export default function AdminDashboard() {
   }, [router, checkedAuth]);
 
   const chartData = results.flatMap((cat) =>
-    cat.nominees.map((n: any) => ({
+    cat.nominees.map((n) => ({
       category: cat._id,
       nominee: `${n.nominee} (${cat._id})`,
       votes: n.votes,
@@ -74,7 +85,7 @@ export default function AdminDashboard() {
               <div key={cat._id} className="mb-4">
                 <h3 className="font-semibold">{cat._id}</h3>
                 <ul className="pl-4 list-disc">
-                  {cat.nominees.map((n: any) => (
+                  {cat.nominees.map((n) => (
                     <li key={n.nominee}>
                       {n.nominee} - {n.votes} vote(s)
                     </li>

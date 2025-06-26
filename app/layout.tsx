@@ -1,7 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { McLaren } from 'next/font/google';
-import { ThemeToggle } from '@/component/ThemeToggle'; // ✅ import client toggle
+import { ThemeToggle } from '@/component/ThemeToggle';
+import Image from 'next/image'; // ✅ Import Image
 
 const mclaren = McLaren({
   subsets: ['latin'],
@@ -24,17 +25,19 @@ export default function RootLayout({
       <body className={mclaren.className}>
         <header className="flex items-center justify-between px-4 py-3 bg-base-100 shadow-md sticky top-0 z-50">
           <div className="flex items-center gap-2">
-            <img
+            <Image
               src="/logo.png"
               alt="ELGVotes Logo"
-              className="w-9 h-9 rounded-full border border-primary shadow"
+              width={36}
+              height={36}
+              className="rounded-full border border-primary shadow"
+              priority // optional: improves loading
             />
             <h1 className="text-xl font-bold tracking-wide text-primary">
               ELGVotes
             </h1>
           </div>
 
-          {/* ✅ Use the client-side toggle */}
           <ThemeToggle />
         </header>
 
