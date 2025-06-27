@@ -24,6 +24,9 @@ interface CategoryResult {
   nominees: NomineeResult[];
 }
 
+// ⬆️ Move this ABOVE the state that uses it
+const categoryKeys = Object.keys(categoriesData) as Array<keyof typeof categoriesData>;
+
 function ThemeToggle() {
   const [theme, setTheme] = useState('elgVotes');
 
@@ -42,13 +45,12 @@ function ThemeToggle() {
 }
 
 export default function VotePage() {
-  const [currentCategory, setCurrentCategory] = useState(Object.keys(categoriesData)[0]);
+  const [currentCategory, setCurrentCategory] = useState<keyof typeof categoriesData>(categoryKeys[0]);
   const [selectedNominee, setSelectedNominee] = useState('');
   const [votedCategories, setVotedCategories] = useState<string[]>([]);
   const [results, setResults] = useState<CategoryResult[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const categoryKeys = Object.keys(categoriesData);
   const currentIndex = categoryKeys.indexOf(currentCategory);
   const isAllVoted = votedCategories.length === categoryKeys.length;
   const progressPercent = (votedCategories.length / categoryKeys.length) * 100;
@@ -106,7 +108,7 @@ export default function VotePage() {
               ← Back Home
             </button>
           </Link>
-          
+          <ThemeToggle />
         </div>
 
         {/* Progress Bar */}
