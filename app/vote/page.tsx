@@ -108,7 +108,7 @@ export default function VotePage() {
               ← Back Home
             </button>
           </Link>
-          <ThemeToggle />
+          
         </div>
 
         {/* Progress Bar */}
